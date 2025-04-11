@@ -12,7 +12,9 @@
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^6.6.0",
+    "@types/zxcvbn": "^4.4.5",
     "bcrypt": "^5.1.1",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "zxcvbn": "^4.4.2"
   }
 }

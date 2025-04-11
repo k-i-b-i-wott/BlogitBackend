@@ -1,12 +1,15 @@
 import {PrismaClient} from '@prisma/client'
 import express from "express"
 import bcrypt from "bcrypt";
+import { verifyUser } from './middlewares/register.usermiddleware.js';
+import { verifyUserDetails } from './middlewares/check.userdetails.js';
+import { checkPasswordStrength } from './middlewares/password.strength.js';
 
 const app = express();
 const client = new PrismaClient();
 app.use(express.json())
 
-app.post('/auth/register',async (req,res)=>{
+app.post('/auth/register',[verifyUser, verifyUserDetails, checkPasswordStrength ], async (req,res)=>{
     const {firstName,lastName,emailAddress,userName,password} = req.body
     const hashedPassword = await bcrypt.hash(password,12);
    try {
