@@ -4,10 +4,16 @@ import bcrypt from "bcrypt";
 import { verifyUser } from './middlewares/register.usermiddleware.js';
 import { verifyUserDetails } from './middlewares/check.userdetails.js';
 import { checkPasswordStrength } from './middlewares/password.strength.js';
+import cors from 'cors';
 
 const app = express();
 const client = new PrismaClient();
 app.use(express.json())
+app.use(cors({
+    origin:'http://localhost:5173',
+    methods:['POST','GET','PUT','PATCH','DELETE'],
+    
+  }));
 
 app.post('/auth/register',[verifyUser, verifyUserDetails, checkPasswordStrength ], async (req,res)=>{
     const {firstName,lastName,emailAddress,userName,password} = req.body
