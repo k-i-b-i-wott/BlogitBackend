@@ -48,6 +48,7 @@ app.post('/auth/register',[verifyUser, verifyUserDetails, checkPasswordStrength 
 app.post('/auth/login',async(req,res)=>{
     
     const {identifier,password} = req.body
+    console.log(identifier,password)
     try {
 
         const user = await client.user.findFirst({
