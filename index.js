@@ -5,9 +5,12 @@ import { verifyUser } from './middlewares/register.usermiddleware.js';
 import { verifyUserDetails } from './middlewares/check.userdetails.js';
 import { checkPasswordStrength } from './middlewares/password.strength.js';
 import cors from 'cors';
-import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken'
+import cookieParser from 'cookie-parser';
+import { verifyUserInfo } from './middlewares/verifyUser.js';
 
 const app = express();
+app.use(cookieParser())
 const client = new PrismaClient();
 app.use(express.json())
 app.use(cors({
@@ -99,6 +102,31 @@ app.post('/auth/login',async(req,res)=>{
 
 })
 
+app.post('/blog/post',verifyUserInfo, async (req,res)=>{
+    const {blogTitle,blogExcerpt,blogBody}=req.body
+    
+    console.log(req.body)
+    try {
+         
+        const post=client.blogs.create({
+            data:{
+                blogTitle,
+                blogExcerpt,
+                blogBody  
+             }
+        })
+        res.status(200).json({
+            message:"Post created successfully",
+            status:"Success",
+            data:post
+        })
+    } catch (error) {
+        res.status(500).json({
+            message:"Error creating the post",
+            status :"fail",
+        })
+    }
+})
 
 
 
