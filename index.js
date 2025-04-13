@@ -193,6 +193,51 @@ app.get('/blog/post',verifyUserInfo, async(req,res)=>{
         })
     }
 })
+
+app.patch('/blog/post/:blogId',verifyUserInfo, async(req,res)=>{
+
+    const {blogTitle, blogExcerpt, blogBody}= req.body
+    
+    const userId = req.user.userId;
+    const blogId =req.params
+    
+    try {
+
+        const post = await client.blogs.update({
+            where:{
+                userId,
+                blogId,
+                isDeleted:false
+            }
+            ,data: {
+                blogTitle: blogTitle && blogTitle,
+                blogExcerpt: blogExcerpt && blogExcerpt,
+                blogBody: blogBody && blogBody,
+                updatedAt: new Date()
+            }
+        })
+        if(!post){
+            return res.status(404).json({
+                message:"Post not found",
+                status:"fail",
+            })
+        }
+        res.status(200).json({
+            message:"Post updated successfully",
+            status:"Success",
+            data:post
+        })
+        
+    } catch (error) {
+        res.status(500).json({
+            message:"Error updating the post",
+            status :"fail",
+            data:error
+        })        
+    }
+
+    
+})
 app.listen(3000, () => {
     console.log('Server running on port 3000!')
 })
