@@ -238,6 +238,35 @@ app.patch('/blog/post/:blogId',verifyUserInfo, async(req,res)=>{
 
     
 })
+
+app.delete('/blog/post/:blogId',verifyUserInfo, async(req,res)=>{
+    const userId = req.user.userId;
+    const {blogId} = req.params
+    console.log(userId)
+    try {
+
+        const deleteBlog = await client.blogs.delete({
+            where:{
+                userId,
+                blogId,                
+            }
+        })
+
+        res.status(200).json({
+            message:"Post deleted successfully",
+            status:"Success",
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            message:"Error deleting the post",
+            status :"fail",
+            data:error
+          
+        })        
+    }
+
+})
 app.listen(3000, () => {
     console.log('Server running on port 3000!')
 })
