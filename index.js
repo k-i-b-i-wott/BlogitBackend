@@ -80,7 +80,7 @@ app.post('/auth/login',async(req,res)=>{
         }
 
         const payload = {
-           id: user.id,
+           userId: user.userId,
            firstName: user.firstName,
            lastName: user.lastName,
            emailAddress: user.emailAddress,
@@ -103,34 +103,96 @@ app.post('/auth/login',async(req,res)=>{
 })
 
 app.post('/blog/post',verifyUserInfo, async (req,res)=>{
-    const {blogTitle,blogExcerpt,blogBody}=req.body
-    
-    console.log(req.body)
-    try {
-         
-        const post=client.blogs.create({
-            data:{
+    const userId = req.user.userId;
+    const {blogTitle, blogExcerpt, blogBody} = req.body;      
+   
+    try{
+
+        const post = await client.blogs.create({
+            data: {
+                userId,
                 blogTitle,
                 blogExcerpt,
-                blogBody  
-             }
+                blogBody
+            }
         })
         res.status(200).json({
             message:"Post created successfully",
             status:"Success",
             data:post
+            
         })
-    } catch (error) {
+
+    }catch (error) {
         res.status(500).json({
             message:"Error creating the post",
             status :"fail",
+            
         })
     }
 })
 
 
+app.get('/blog/post/:blogId',verifyUserInfo, async(req,res)=>{    
+    
+    const userId = req.user.userId;
+    const blogId = req.params.blogId;
+   try {
+
+    const post = await client.blogs.findFirst({
+        where: {
+            userId,
+            blogId,
+            isDeleted:false
+        },     
+    
+   
+    })
+    if(!post){
+        return res.status(404).json({
+            message:"Post not found",
+            status:"fail",
+        })
+    }
+    res.status(200).json({
+        message:"Post fetched successfully",
+        status:"Success",
+        data:post
+    })
+   } catch (error) {
+    res.status(500).json({
+        message:"Error fetching the post",
+        status :"fail",
+     
+    })
+    
+   }
+})
 
 
+app.get('/blog/post',verifyUserInfo, async(req,res)=>{    
+    const userId = req.user.userId;
+    try {
+        const posts = await client.blogs.findMany({
+            where: {
+                userId,
+                isDeleted:false
+            },     
+    
+   
+        })
+        res.status(200).json({    
+            message:"Posts fetched successfully",
+            status:"Success",
+            data:posts
+        })
+    } catch (error) {
+        res.status(500).json({    
+            message:"Error fetching the posts",
+            status :"fail", 
+        })
+    }
+})
 app.listen(3000, () => {
     console.log('Server running on port 3000!')
 })
