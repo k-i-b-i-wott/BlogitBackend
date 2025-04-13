@@ -199,7 +199,7 @@ app.patch('/blog/post/:blogId',verifyUserInfo, async(req,res)=>{
     const {blogTitle, blogExcerpt, blogBody}= req.body
     
     const userId = req.user.userId;
-    const blogId =req.params
+    const {blogId} =req.params
     
     try {
 
