@@ -10,7 +10,7 @@ import jwt from 'jsonwebtoken'
 import cookieParser from 'cookie-parser';
 import { verifyUserInfo } from './middlewares/verifyUser.js';
 
-const app = express();
+export const app = express();
 app.use(cookieParser())
 const client = new PrismaClient();
 app.use(express.json())
@@ -69,7 +69,7 @@ app.post('/auth/login',async(req,res)=>{
         if(!user){
             return res.status(401).json({
                 message:"Invalid credentials",
-                status:"fail",
+                status:"fail",                
             })
         }
         const isPasswordValid= await bcrypt.compare(password,user.password)
@@ -269,7 +269,3 @@ app.delete('/blog/post/:blogId',verifyUserInfo, async(req,res)=>{
 
 })
 
-const port = process.env.PORT || 3000
-app.listen(port, () => {
-    console.log('Server running on port 3000!')
-})
