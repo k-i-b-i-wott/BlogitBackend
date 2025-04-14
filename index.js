@@ -1,4 +1,5 @@
-import {PrismaClient} from '@prisma/client'
+
+import {PrismaClient} from "@prisma/client"
 import express from "express"
 import bcrypt from "bcrypt";
 import { verifyUser } from './middlewares/register.usermiddleware.js';
